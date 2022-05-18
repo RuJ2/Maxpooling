@@ -4,7 +4,8 @@
 #include "../src/add.hpp"
 using namespace std;
 
-void show(Tensor& tensor)
+template<typename Dtype>
+void show(Tensor<Dtype>& tensor)
 {   
     cout << "dim: " << tensor.getDim() << endl;
     vector<int> shape = tensor.Shape();
@@ -15,38 +16,48 @@ void show(Tensor& tensor)
 }
 
 int main(){
-    vector<float> data{1,2,3,4,5,6,7,8};
-    vector<int> shape{2,4};
-    Tensor tensor(data, shape);
-    cout << "Dim: " << tensor.getDim() << endl;
-    cout << "Shape: ";
-    for(auto i:tensor.Shape()) cout << i << " "; cout << endl;
-    cout << "tensor[1,2]: " << tensor.at({1,2}) << endl;
+    // vector<float> data = {1,2,3,4,5,6};
+    // vector<int> shape1{  6,1};
+    // vector<int> shape2{3,1,2};
+    // Tensor<float> tensor1(data, shape1);
+    // Tensor<float> tensor2(data, shape2);
     
-    printf("-----------------\n");
-    Tensor tensor1 = tensor;
-    tensor1.newDim(3);
-    cout << "New Shape: ";
-    for(auto i:tensor1.Shape()) cout << i << " "; cout << endl;
-    cout << "tensor[1,1,2]: " << tensor1.at({1,1,2}) << endl;
+    // Tensor<float> tensor3 = add(tensor1, tensor2);
+    
+    // for(int i=0; i<3; ++i)
+    //     cout << tensor3.Shape()[i] << " ";
+    // cout << endl;
+    // show(tensor3);
+    // cout << tensor3.at({0,0,0}) << " " << tensor3.at({0,0,1}) << endl;
 
-    printf("-----------------\n");
-    Tensor tensor2 = add(tensor, tensor1);
-    cout << "Dim: " << tensor2.getDim() << endl;
-    cout << "Shape: ";
-    for(auto i:tensor2.Shape()) cout << i << " "; cout << endl;
-    cout << "tensor[1,1,2]: " << tensor2.at({1,1,2}) << endl;
+    // vector<float> data{1,2,3,4,5,6,7,8};
+    // vector<int> shape{2,4};
+    // Tensor<float> tensor(data, shape);
+    // show(tensor);
+    // cout << "tensor[1,2]: " << tensor.at({1,2}) << endl;
+    
+    // printf("-----------------\n");
+    // Tensor<float> tensor1 = tensor;
+    // tensor1.newDim(3);
+    // show(tensor1);
+    // cout << "tensor[1,1,2]: " << tensor1.at({1,1,2}) << endl;
 
-    printf("-----------------\n");
-    float* p3 = new float[2*2*5*5];
-    for(int i=0; i<100; ++i) p3[i] = i;
-    vector<int> shape_3 {2,2,5,5};
-    Tensor tensor3(p3, shape_3);
-    Tensor tensor3_out = maxPooling(tensor3);
-    cout << "tensor3_out.shape: [ ";
-    for(auto i:tensor3_out.Shape()) cout << i << " "; cout << "]\n";
-    cout << tensor3_out.at({0,0,0,0}) << " " << tensor3_out.at({0,0,0,1}) << " " << tensor3_out.at({0,0,0,2}) << endl
-         << tensor3_out.at({0,0,1,0}) << " " << tensor3_out.at({0,0,1,1}) << " " << tensor3_out.at({0,0,1,2}) << endl;
+    // printf("-----------------\n");
+    // Tensor<float> tensor2 = add(tensor, tensor1);
+    // show(tensor2);
+    // cout << "tensor[1,1,2]: " << tensor2.at({1,1,2}) << endl;
+
+    // printf("-----------------\n");
+    // float* p3 = new float[2*2*5*5];
+    // for(int i=0; i<100; ++i) p3[i] = i;
+    // vector<int> shape_3 {2,2,5,5};
+    // Tensor<float> tensor3(p3, shape_3);
+    // Tensor<float> tensor3_out = maxPooling(tensor3);
+    // show(tensor3);
+    // printf("----------\n");
+    // show(tensor3_out);
+    // cout << tensor3_out.at({0,0,0,0}) << " " << tensor3_out.at({0,0,0,1}) << " " << tensor3_out.at({0,0,0,2}) << endl
+    //      << tensor3_out.at({0,0,1,0}) << " " << tensor3_out.at({0,0,1,1}) << " " << tensor3_out.at({0,0,1,2}) << endl;
 
     return 0;
 }
