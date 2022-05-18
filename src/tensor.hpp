@@ -6,33 +6,39 @@
 #include<memory>
 using namespace std;
 
+template<typename Dtype>
 class Tensor{
 public:
-    Tensor(vector<float>& Data, vector<int>& shape);
-    Tensor(float*p, vector<int>& shape);
+    Tensor() {}
+    Tensor(vector<Dtype>& Data, vector<int>& shape);
+    Tensor(Dtype*p, vector<int>& shape);
     ~Tensor(){}
     Tensor(const Tensor& tensor);
+    Tensor<Dtype> operator=(Tensor& tensor);
     
-    void init_shape(vector<int>& shape);
-    void init_stride();
     int getDim() { return ndim_; }
-    float* getPtr() {return pdata_.get();}
     vector<int> Shape() { return shape_; }
-    float at(vector<int>&& p);
-    float at(vector<int>& p);
+    Dtype* getPtr() {return pdata_.get();}  
+    Dtype at(vector<int>&& p);  // Subscript access element
+    Dtype at(vector<int>& p);
     void newDim(int newDim);
 
 private:
-    shared_ptr<float> pdata_=nullptr;
+    void init_shape(vector<int>& shape);
+    void init_stride();
+
+private:
+    shared_ptr<Dtype> pdata_=nullptr;
     vector<int> shape_;
     vector<int> stride_;  // fast access through stride
-    int ndim_;
+    int ndim_ = 0;
 };
 
-Tensor::Tensor(vector<float>& Data, vector<int>& shape){
+template<typename Dtype>
+Tensor<Dtype>::Tensor(vector<Dtype>& Data, vector<int>& shape){
     init_shape(shape);
     int max_size = accumulate(shape_.begin(), shape_.end(), 1 ,multiplies<int>());
-    float *p = new float[max_size];
+    Dtype *p = new Dtype[max_size];
     
     // Input is truncated if exceed max_size
     int bound = Data.size() <= max_size ? Data.size() : max_size;
@@ -41,14 +47,16 @@ Tensor::Tensor(vector<float>& Data, vector<int>& shape){
         p[i] = Data[i];
     
     pdata_.reset(p);
-}
+};
 
-Tensor::Tensor(float*p, vector<int>& shape){
+template<typename Dtype>
+Tensor<Dtype>::Tensor(Dtype*p, vector<int>& shape){
     init_shape(shape);
     pdata_.reset(p);
 }
 
-Tensor::Tensor(const Tensor& tensor){
+template<typename Dtype>
+Tensor<Dtype>::Tensor(const Tensor<Dtype>& tensor){
     ndim_ = tensor.ndim_;
     shape_ = tensor.shape_;
     init_stride();
@@ -56,7 +64,8 @@ Tensor::Tensor(const Tensor& tensor){
     pdata_ = tensor.pdata_;
 }
 
-float Tensor::at(vector<int>&& p){
+template<typename Dtype>
+Dtype Tensor<Dtype>::at(vector<int>&& p){
     if(p.size()!=shape_.size())
     {
         perror("at: Input dimensions do not match\n");
@@ -77,7 +86,9 @@ float Tensor::at(vector<int>&& p){
     }
 }
 
-float Tensor::at(vector<int>& p){
+// same to the right-value call
+template<typename Dtype>
+Dtype Tensor<Dtype>::at(vector<int>& p){
     if(p.size()!=shape_.size())
     {
         perror("at: Input dimensions do not match\n");
@@ -98,24 +109,38 @@ float Tensor::at(vector<int>& p){
     }
 }
 
-void Tensor::init_shape(vector<int>& shape){
+template<typename Dtype>
+void Tensor<Dtype>::init_shape(vector<int>& shape){
+    if(shape.empty()){
+        perror("init_shape: empty\n");
+        exit(-1);
+    }
+    for(int i=0; i<shape.size(); i++)
+        if(shape[i]<=0){
+            perror("init_shape: shape_size must be positive\n");
+        }
     ndim_ = shape.size();
     shape_ = shape;
     init_stride();
 }
 
-void Tensor::init_stride(){
+template<typename Dtype>
+void Tensor<Dtype>::init_stride(){
     stride_ = vector<int>(ndim_);
     int tmp = 1;
     for(int i=ndim_-1; i>=0; --i) {
-        if(shape_[i]==1) stride_[i] = 0;
+        if(shape_[i]==1) stride_[i] = 0;  // Implement broadcast
         else    stride_[i] = tmp;
         tmp *= shape_[i];
     }
 }   
 
-void Tensor::newDim(int newDim){
-    if(newDim<=ndim_) return;
+template<typename Dtype>
+void Tensor<Dtype>::newDim(int newDim){
+    if(newDim<=ndim_){
+        perror("newDim should be bigger\n");
+        exit(-1);
+    } 
     shape_.insert(shape_.begin(),newDim-ndim_, 1);
     ndim_ = newDim;
     init_stride();

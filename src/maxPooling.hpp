@@ -6,12 +6,14 @@ const static int kernel_size = 3;
 const static int pad = 1;
 const static int stride = 2;
 
-void maxPooling(float*, float*, int, int);
+template<typename Dtype>
+void maxPooling(Dtype*, Dtype*, int, int);
 
-Tensor maxPooling(Tensor &tensor){
+template<typename Dtype>
+Tensor<Dtype> maxPooling(Tensor<Dtype> &tensor){
     if(tensor.getDim()<2){
         perror("maxPooling: Input dimension error");
-        exit(0);
+        exit(-1);
     }
 
     vector<int> tensor_shape = tensor.Shape();
@@ -26,7 +28,7 @@ Tensor maxPooling(Tensor &tensor){
 
     int max_size = accumulate(out_shape.begin(), out_shape.end(), 1 ,multiplies<int>());
     int Image_num = max_size/(out_row*out_col);
-    float *p = new float[max_size];
+    Dtype *p = new Dtype[max_size];
     
 
     for(int i=0; i<Image_num; i++)
@@ -35,11 +37,12 @@ Tensor maxPooling(Tensor &tensor){
         maxPooling(tensor.getPtr()+i*Image_row*Image_col, p+i*out_row*out_col, Image_row, Image_col);
     }
 
-    return Tensor(p, out_shape);
+    return Tensor<Dtype>(p, out_shape);
 }
 
 // overloading
-void maxPooling(float* srcImg, float* dstImg, int row, int col){
+template<typename Dtype>
+void maxPooling(Dtype* srcImg, Dtype* dstImg, int row, int col){
     int out_row = (row-1)/stride + 1;
     int out_col = (col-1)/stride + 1;
 
@@ -54,7 +57,7 @@ void maxPooling(float* srcImg, float* dstImg, int row, int col){
             int col_end = min(j*stride+1, col-1);
             
             // if on the edge need pad 
-            float max_val = 0;
+            Dtype max_val = 0;
             if(row_start==0 || row_start==row || col_start==0 || col_start==col)
                 max_val = pad;
 
