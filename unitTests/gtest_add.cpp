@@ -49,16 +49,6 @@ TEST(add, BroadcastAdd){
     EXPECT_EQ(tensor3.at({1,4,1}), tensor1.at({4,0})+tensor2.at({1,0,1}));
 }
 
-TEST(add, FloatAdd){
-    float *pdata1 = new float[6];
-    for(int i=0; i<6; ++i) pdata1[i] = i;
-    vector<int> shape{1,2,3};
-    Tensor<float> tensor1(pdata1, shape);
-    Tensor<float> tensor2(pdata1, shape);
-    Tensor<float> tensor3 = add(tensor1, tensor2);
-    EXPECT_FLOAT_EQ(tensor3.at({0,1,2}), 5.0+5.0);
-}
-
 TEST(add, IfCanBroadcastAdd){
     vector<float> data{1,2,3,4,5,6};
     vector<int> shape1{  6,1};
@@ -70,6 +60,18 @@ TEST(add, IfCanBroadcastAdd){
 
     EXPECT_DEATH(add(tensor1, tensor2), "");   // No 1 and 6!=3 in shape[0]
     EXPECT_NO_FATAL_FAILURE(add(tensor1, tensor3));  // legal
+}
+
+TEST(add, FloatAdd){
+    float *pdata1 = new float[6];
+    for(int i=0; i<6; ++i) pdata1[i] = i;
+    vector<int> shape{1,2,3};
+    Tensor<float> tensor1(pdata1, shape);
+    Tensor<float> tensor2(pdata1, shape);
+    Tensor<float> tensor3 = add(tensor1, tensor2);
+    EXPECT_FLOAT_EQ(tensor3.at({0,1,2}), 5.0+5.0);
+}
+
 }
 
 GTEST_API_ int main(int argc, char **argv) {
