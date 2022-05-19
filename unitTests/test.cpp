@@ -2,6 +2,7 @@
 #include "../src/tensor.hpp"
 #include "../src/maxPooling.hpp"
 #include "../src/add.hpp"
+#include <omp.h>
 using namespace std;
 
 template<typename Dtype>
@@ -16,20 +17,25 @@ void show(Tensor<Dtype>& tensor)
 }
 
 int main(){
-    // vector<float> data = {1,2,3,4,5,6};
-    // vector<int> shape1{  6,1};
-    // vector<int> shape2{3,1,2};
-    // Tensor<float> tensor1(data, shape1);
-    // Tensor<float> tensor2(data, shape2);
+    vector<float> data = {1,2,3,4,5,6};
+    vector<int> shape1{  6,1};
+    vector<int> shape2{3,1,2};
+    Tensor<float> tensor1(data, shape1);
+    Tensor<float> tensor2(data, shape2);
     
-    // Tensor<float> tensor3 = add(tensor1, tensor2);
+    Tensor<float> tensor3 = add(tensor1, tensor2);
     
-    // for(int i=0; i<3; ++i)
-    //     cout << tensor3.Shape()[i] << " ";
-    // cout << endl;
-    // show(tensor3);
-    // cout << tensor3.at({0,0,0}) << " " << tensor3.at({0,0,1}) << endl;
+    for(int i=0; i<3; ++i)
+        cout << tensor3.Shape()[i] << " ";
+    cout << endl;
+    show(tensor3);
+    cout << tensor3.at({0,0,0}) << " " << tensor3.at({0,0,1}) << endl;
 
+    cout << "CPU_NUM: " << omp_get_num_procs() << endl;
+#pragma omp parallel for
+    for(int i=0; i<10; ++i)
+        cout << i << " ";
+    cout << endl;
     // vector<float> data{1,2,3,4,5,6,7,8};
     // vector<int> shape{2,4};
     // Tensor<float> tensor(data, shape);
