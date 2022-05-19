@@ -15,7 +15,7 @@ There are two directory include source files and unittests files.
 
 ### Getting Started
 - Make sure your compiler compliant with the **C++11** standard or newer.
-- Make sure you have installed and configured **googletest**.
+- Make sure you have installed and configured **googletest**. [reference](https://www.cnblogs.com/galaxy-hao/p/13171340.html)
 
 1. ` cd unitTests && make `
 2. ` ./test_tensor; ./test_add; ./test_maxPooling `
