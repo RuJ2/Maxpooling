@@ -1,6 +1,7 @@
 #ifndef _MAXPOOLING_
 #define _MAXPOOLING_
 #include"tensor.hpp"
+#include "omp.h"
 
 const static int kernel_size = 3;
 const static int pad = 1;
@@ -30,13 +31,12 @@ Tensor<Dtype> maxPooling(Tensor<Dtype> &tensor){
     int Image_num = max_size/(out_row*out_col);
     Dtype *p = new Dtype[max_size];
     
-
+#pragma omp parallel for
     for(int i=0; i<Image_num; i++)
     {
         // Gets the header address of input and output data
         maxPooling(tensor.getPtr()+i*Image_row*Image_col, p+i*out_row*out_col, Image_row, Image_col);
     }
-
     return Tensor<Dtype>(p, out_shape);
 }
 
@@ -46,6 +46,7 @@ void maxPooling(Dtype* srcImg, Dtype* dstImg, int row, int col){
     int out_row = (row-1)/stride + 1;
     int out_col = (col-1)/stride + 1;
 
+#pragma omp parallel for
     for(int i=0; i<out_row; ++i)
     {
         int row_start = max(i*stride-1,0);
