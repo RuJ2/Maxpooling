@@ -72,12 +72,6 @@ TEST(add, IfCanBroadcastAdd){
     EXPECT_NO_FATAL_FAILURE(add(tensor1, tensor3));  // legal
 }
 
-TEST(add, last){
-
-}
-
-}
-
 GTEST_API_ int main(int argc, char **argv) {
   printf("Running main() from %s\n", __FILE__);
   testing::InitGoogleTest(&argc, argv);
