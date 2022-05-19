@@ -9,8 +9,8 @@ namespace Test_maxPooling{
 TEST(maxPooling, simpleTest){
     float* p = new float[2*2*5*5];
     for(int i=0; i<100; ++i) p[i] = i;
-    vector<int> shape_ {2,2,5,5};
-    Tensor<float> tensor(p, shape_);
+    vector<int> shape {2,2,5,5};
+    Tensor<float> tensor(p, shape);
     Tensor<float> tensor_out = maxPooling(tensor);
     // shape validation
     EXPECT_EQ(tensor_out.getDim(), 4);
@@ -34,8 +34,8 @@ TEST(maxPooling, simpleTest){
 
 TEST(maxPooling, LegalInput){
     float* p = new float[100];
-    vector<int> shape_ {100};
-    Tensor<float> tensor(p, shape_);
+    vector<int> shape {100};
+    Tensor<float> tensor(p, shape);
     EXPECT_DEATH(maxPooling(tensor),""); // shape less two
 
     float* p1 = new float[1];
