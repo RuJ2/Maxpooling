@@ -88,22 +88,3 @@ GTEST_API_ int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
-
-
-int main1(){
-    vector<float> data{1,2,3,4,5,6,7,8};
-    vector<int> shape{2,4};
-    Tensor<float> tensor(data, shape);
-    cout << "Dim: " << tensor.getDim() << endl;
-    cout << "Shape: ";
-    for(auto i:tensor.Shape()) cout << i << " "; cout << endl;
-    cout << "tensor[1,2]: " << tensor.at({1,2}) << endl;
-    
-    printf("-----------------\n");
-    Tensor<float> tensor1 = tensor;
-    tensor1.newDim(3);
-    cout << "New Shape: ";
-    for(auto i:tensor1.Shape()) cout << i << " "; cout << endl;
-    cout << "tensor[1,1,2]: " << tensor1.at({1,1,2}) << endl;
-    return 0;
-}
